@@ -66,7 +66,8 @@
         <footer class='px12 py12 bg-gray-faint txt-s'>
           <a href='https://wiki.openstreetmap.org/wiki/India/Events/Neighbourhood_mapping_party_-_QikPik#Schedule'>Event
             Schedule</a> |
-          <a href='https://wiki.openstreetmap.org/wiki/India'>OpenStreetMap India</a>
+          <a href='https://wiki.openstreetmap.org/wiki/India'>OpenStreetMap India</a> |
+          <a href='https://github.com/osm-in/nieghbourhood-mapping-party'>Github <svg class='icon inline'><use xlink:href='#icon-github'/></svg></a>
         </footer>
       </div>
     </div>
@@ -281,7 +282,6 @@
               var description = `<h4 class='txt-h4'>` + e.features[0].properties.neighborhood + `</h4>`;
               description += `<br><b>Going to map: </b>${e.features[0].properties.what}`;
               description += `<br><b>How: </b>${e.features[0].properties.how}`;
-              description += `<br><b>Why: </b>${e.features[0].properties.why}`;
               description += `<br><b>Languages: </b>${e.features[0].properties.languages}`;
               description +=
                 `<br><a href='https://osmcha.org/filters?filters={"in_bbox":[{"label":"${bbox_osmcha}","value":"${bbox_osmcha}"}],"area_lt":[{"label":"10","value":"10"}]}'>OSMCha</a>`
