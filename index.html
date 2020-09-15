@@ -1,0 +1,421 @@
+  <!DOCTYPE html>
+  <html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <title>OpenStreetMap India: Neighbourhood Mapping Party Map</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
+
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://npmcdn.com/csv2geojson@latest/csv2geojson.js'></script>
+
+    <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+
+    <link href="https://api.mapbox.com/mapbox-assembly/v0.24.0/assembly.min.css" rel="stylesheet">
+    <script async defer src="https://api.mapbox.com/mapbox-assembly/v0.24.0/assembly.js"></script>
+
+    <style>
+      #logo {
+        position: relative;
+      }
+
+      #logo::before {
+        content: "";
+        background: url('https://wiki.openstreetmap.org/w/images/0/07/OpenStreetMap-India.svg') no-repeat right top;
+        background-size: 20%;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        opacity: 0.5;
+        z-index: -1;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div class='flex-parent viewport-full relative scroll-hidden'>
+      <div class='flex-child w-full wmin240-ml wmax360-ml absolute static-ml left bottom'>
+        <div class='flex-parent flex-parent--column viewport-third h-full hmax-full '>
+          <div class='flex-child flex-child--grow px12 py12 scroll-auto'>
+            <div id="logo">
+              <h4 class='txt-h4 txt-bold'>OpenStreetMap India </h4>
+              <h2 class='txt-h2 mb12'>Neighbourhood Mapping</h2>
+            </div>
+            <img class='w-full'
+              src='https://wiki.openstreetmap.org/w/images/thumb/7/77/Chickpete_Bengaluru_OSM_improvement.gif/250px-Chickpete_Bengaluru_OSM_improvement.gif'>
+            <p class='txt-l txt-p'>Learn to build a free and <abbr title='open source map data that can be downloaded'
+                class='txt-abbr'>open map</abbr> of your neighbourhood using the <a class='link'
+                href='https://www.openstreetmap.org/#map=6/19.289/78.963'>OpenStreetMap Project</a>.</p>
+            <p class='txt-l txt-p'>A fun way to learn to contribute is by joining a virtual mapping party where members
+              of the <a class='link' href='https://wiki.openstreetmap.org/wiki/India'>India mapping community</a> are
+              available to collaborate and guide beginners.</p>
+            <h3 class='txt-bold my12'>Next mapping party:</h3>
+            <ul class='txt-l my12 px12 py12 bg-gray-faint'>
+              <li class='txt-l txt-bold'> 26-27 September 2020</li>
+              <li class='txt-em'> <a class='link'
+                  href='https://qikpik.store/osm-neighbourhood-mapping-party/#faq'>hosted by QikPik</a></li>
+
+              <li class='txt-l my12'>
+                <a href='https://wiki.openstreetmap.org/wiki/India/Events/Neighbourhood_mapping_party_-_QikPik'
+                  class='btn'>Details & Schedule</a>
+                <a href='https://docs.google.com/forms/d/e/1FAIpQLSdIDTA2OZvhZgeajWpys57_IFYg0jTagYW9Lk_PsS-0Kjx4iQ/viewform'
+                  class='btn btn--green'>Register</a></li>
+            </ul>
+            <div class='hr'></div>
+            <h4 class='txt-h4'><span id='registrations'>..</span> neighborhoods mappers registered (<a class='link'
+                href='https://docs.google.com/spreadsheets/d/1S9RMUbAqf7kfO49FIieP_k8EfYYBMBqxvjdI_Fxx6JE/edit?usp=sharing'>data</a>)
+            </h4>
+
+          </div>
+          <footer class='px12 py12 bg-gray-faint txt-s'>
+            <a href='https://wiki.openstreetmap.org/wiki/India/Events/Neighbourhood_mapping_party_-_QikPik#Schedule'>Event
+              Schedule</a> |
+            <a href='https://wiki.openstreetmap.org/wiki/India'>OpenStreetMap India</a> |
+            <a href='https://github.com/osm-in/nieghbourhood-mapping-party'>Github <svg class='icon inline'>
+                <use xlink:href='#icon-github' /></svg></a>
+          </footer>
+        </div>
+      </div>
+      <div id='map' class='flex-child flex-child--grow bg-darken10 viewport-twothirds viewport-full-ml'></div>
+    </div>
+
+    <script>
+      var transformRequest = (url, resourceType) => {
+        var isMapboxRequest =
+          url.slice(8, 22) === "api.mapbox.com" ||
+          url.slice(10, 26) === "tiles.mapbox.com";
+        return {
+          url: isMapboxRequest ?
+            url.replace("?", "?pluginName=sheetMapper&") : url
+        };
+      };
+
+
+      mapboxgl.accessToken = 'pk.eyJ1IjoicGxhbmVtYWQiLCJhIjoiemdYSVVLRSJ9.g3lbg_eN0kztmsfIPxa9MQ'; //Mapbox token 
+
+      var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/mapbox/light-v10', //stylesheet location
+        center: [81.33, 21.31], // starting position
+        zoom: 4, // starting zoom
+        transformRequest: transformRequest,
+        hash: true
+      });
+
+
+
+      //YOUR TURN: Replace sheet id
+      var sheetId = '1S9RMUbAqf7kfO49FIieP_k8EfYYBMBqxvjdI_Fxx6JE';
+      var sheetName = 'Sheet1';
+
+      $(document).ready(function () {
+        $.ajax({
+          type: "GET",
+          url: `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheetName}`,
+          dataType: "text",
+          success: function (csvData) {
+            makeGeoJSON(csvData);
+          }
+        });
+
+        function makeGeoJSON(csvData) {
+
+          csv2geojson.csv2geojson(csvData, {
+            latfield: 'Latitude',
+            lonfield: 'Longitude',
+            delimiter: ','
+          }, function (err, data) {
+
+            console.log(data)
+            document.getElementById('registrations').textContent = data.features.length
+
+            map.on('load', function () {
+
+              filterLayers('IN');
+
+              // Add OSM tile layer at after Z14
+              map.addLayer({
+                'id': 'osm-tiles',
+                'type': 'raster',
+                'source': {
+                  'type': 'raster',
+                  // Add OSM tiles: https://wiki.openstreetmap.org/wiki/Tile_servers
+                  'tiles': [
+                    'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                  ],
+                  'tileSize': 256,
+                  'minzoom': 13
+                },
+                'paint': {
+                  // OPTIONAL: Fun transition from B&W to color while zooming in: https://www.mapbox.com/mapbox-gl-js/style-spec#layers-raster
+                  'raster-opacity': {
+                    stops: [
+                      [12, 0],
+                      [12.5, 1]
+                    ]
+                  }
+                }
+              });
+
+              //Add the the layer to the map 
+              map.addSource('csvData', {
+                'type': 'geojson',
+                'data': data,
+                cluster: true,
+                clusterMaxZoom: 14, // Max zoom to cluster points on
+                clusterRadius: 20 // Radius of each cluster when clustering points (defaults to 50)
+              });
+
+              // Add cluster layers 
+              // https://docs.mapbox.com/mapbox-gl-js/example/cluster/
+
+              map.addLayer({
+                id: 'clusters',
+                type: 'circle',
+                source: 'csvData',
+                filter: ['has', 'point_count'],
+                paint: {
+                  'circle-color': "hsla(0, 0%, 100%, 0)",
+                  'circle-radius': [
+                    'step',
+                    ['get', 'point_count'],
+                    10,
+                    3,
+                    15,
+                    10,
+                    20
+                  ],
+                  'circle-stroke-width': [
+                    'step',
+                    ['get', 'point_count'],
+                    2,
+                    3,
+                    3,
+                    10,
+                    4
+                  ],
+                  'circle-stroke-color': "hsla(0, 100%, 62%, 0.83)"
+                }
+              });
+
+
+
+              map.addLayer({
+                id: 'unclustered-point',
+                type: 'circle',
+                source: 'csvData',
+                filter: ['!', ['has', 'point_count']],
+                paint: {
+                  'circle-color': "hsla(0, 0%, 100%, 0)",
+                  'circle-radius': [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    10,
+                    5,
+                    13,
+                    10,
+                    18,
+                    800
+                  ],
+                  'circle-stroke-width': [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    10,
+                    2,
+                    13,
+                    3,
+                    18,
+                    8
+                  ],
+                  'circle-stroke-color': "hsla(0, 100%, 62%, 0.83)"
+                }
+              });
+
+              map.addLayer({
+                id: 'neighborhood label',
+                type: 'symbol',
+                source: 'csvData',
+                filter: ['!', ['has', 'point_count']],
+                paint: {
+                  'text-color': "hsla(0, 98%, 46%, 0.83)",
+                  'text-halo-color': 'white',
+                  'text-halo-width': 2
+                },
+                layout: {
+                  'text-field': '{neighborhood}',
+                  'text-font': ['DIN Pro Bold', 'Arial Unicode MS Bold'],
+                  'text-size': 12,
+                  'text-anchor': "top-left",
+                  'text-justify': 'left'
+
+                }
+              });
+
+              map.addLayer({
+                id: 'cluster-count',
+                type: 'symbol',
+                source: 'csvData',
+                filter: ['has', 'point_count'],
+                layout: {
+                  'text-field': '{point_count_abbreviated}',
+                  'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                  'text-size': 12
+                }
+              });
+
+
+              // When a click event occurs on a feature in the csvData layer, open a popup at the
+              // location of the feature, with description HTML from its properties.
+              map.on('click', 'unclustered-point', function (e) {
+                var coordinates = e.features[0].geometry.coordinates.slice();
+
+                var lng = coordinates[0];
+                var lat = coordinates[1];
+
+                //set popup text 
+
+
+                // Generate bbox from point coords
+                var buffer = 0.05;
+                var bbox_osmcha = [lng + buffer, lat - buffer, lng - buffer, lat + buffer].join(',');
+                var bbox_wsen = [lng - buffer, lat - buffer, lng + buffer, lat + buffer].join(',');
+
+                //You can adjust the values of the popup to match the headers of your CSV. 
+                // For example: e.features[0].properties.Name is retrieving information from the field Name in the original CSV. 
+                var description = `<h4 class='txt-h4'>` + e.features[0].properties.neighborhood +
+                  `</h4>`;
+                description += `<br><b>Going to map: </b>${e.features[0].properties.what}`;
+                description += `<br><b>How: </b>${e.features[0].properties.how}`;
+                description += `<br><b>Languages: </b>${e.features[0].properties.languages}`;
+                description +=
+                  `<br><a href='https://osmcha.org/filters?filters={"in_bbox":[{"label":"${bbox_osmcha}","value":"${bbox_osmcha}"}],"area_lt":[{"label":"10","value":"10"}]}'>OSMCha</a>`
+                description +=
+                  `<br><a href='https://www.openstreetmap.org/history#map=14/${e.lngLat.lat}/${e.lngLat.lng}'>OSM History</a>`
+                description +=
+                  `<br><a href='https://render.openstreetmap.org/cgi-bin/export?bbox=${bbox_wsen}&scale=40950&format=png'>Download map</a>`
+
+                fetch(
+                  'https://www.openstreetmap.org/history?list=1&bbox=78.19929152727127%2C17.326283217841127%2C78.3434870839119%2C17.4458708268874'
+                ).then(data => console.log(data))
+
+                // Ensure that if the map is zoomed out such that multiple
+                // copies of the feature are visible, the popup appears
+                // over the copy being pointed to.
+                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                  coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                }
+
+                //add Popup to map
+
+                new mapboxgl.Popup()
+                  .setLngLat(coordinates)
+                  .setHTML(description)
+                  .addTo(map);
+              });
+
+              // inspect a cluster on click
+              map.on('click', 'clusters', function (e) {
+                var features = map.queryRenderedFeatures(e.point, {
+                  layers: ['clusters']
+                });
+                var clusterId = features[0].properties.cluster_id;
+                map.getSource('csvData').getClusterExpansionZoom(
+                  clusterId,
+                  function (err, zoom) {
+                    if (err) return;
+
+                    map.easeTo({
+                      center: features[0].geometry.coordinates,
+                      zoom: zoom + 1
+                    });
+                  }
+                );
+              });
+
+              // Change the cursor to a pointer when the mouse is over the places layer.
+              map.on('mouseenter', 'clusters', function () {
+                map.getCanvas().style.cursor = 'pointer';
+              });
+              map.on('mouseenter', 'unclustered-point', function () {
+                map.getCanvas().style.cursor = 'pointer';
+              });
+
+              // Change it back to a pointer when it leaves.
+              map.on('mouseleave', 'clusters', function () {
+                map.getCanvas().style.cursor = '';
+              });
+              map.on('mouseleave', 'unclustered-point', function () {
+                map.getCanvas().style.cursor = '';
+              });
+
+              var bbox = turf.bbox(data);
+              map.fitBounds(bbox, {
+                padding: 50
+              });
+
+            });
+
+          });
+        };
+      });
+
+
+      // Create a function that will identify which worldview
+      // is currently selected and run the filterLayers function
+      // with that worldview as an argument.
+      function switchWorldview(option) {
+        filterLayers(option.target.id);
+      }
+
+      // Update the filter for each "admin-0-*" layer, which contain
+      // administrative boundaries at the country level.
+      // These are the same filters used in the Mapbox Light
+      // style except that the worldview is based on user input.
+      function filterLayers(worldview) {
+        // The "admin-0-boundary-disputed" layer shows boundaries
+        // at this level that are known to be disputed.
+        map.setFilter('admin-0-boundary-disputed', [
+          'all',
+          ['==', ['get', 'disputed'], 'true'],
+          ['==', ['get', 'admin_level'], 0],
+          ['==', ['get', 'maritime'], 'false'],
+          ['match', ['get', 'worldview'],
+            ['all', worldview], true, false
+          ]
+        ]);
+        // The "admin-0-boundary" layer shows all boundaries at
+        // this level that are not disputed.
+        map.setFilter('admin-0-boundary', [
+          'all',
+          ['==', ['get', 'admin_level'], 0],
+          ['==', ['get', 'disputed'], 'false'],
+          ['==', ['get', 'maritime'], 'false'],
+          ['match', ['get', 'worldview'],
+            ['all', worldview], true, false
+          ]
+        ]);
+        // The "admin-0-boundary-bg" layer helps features in both
+        // "admin-0-boundary" and "admin-0-boundary-disputed" stand
+        // out visually.
+        map.setFilter('admin-0-boundary-bg', [
+          'all',
+          ['==', ['get', 'admin_level'], 0],
+          ['==', ['get', 'maritime'], 'false'],
+          ['match', ['get', 'worldview'],
+            ['all', worldview], true, false
+          ]
+        ]);
+      }
+    </script>
+
+  </body>
+
+  </html>
