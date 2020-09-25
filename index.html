@@ -27,11 +27,12 @@
         height: 100vh;
       }
 
-      /* @media only screen and (max-width: 960px) {
+      @media only screen and (max-width: 960px) {
         #map {
           height: 80vh;
+          margin: 20px;
         }
-      } */
+      }
 
       #sidebar {
         max-height: 100vh;
@@ -40,8 +41,8 @@
 
       @media only screen and (max-width: 960px) {
         #sidebar {
-          max-height: 80vh;
-          overflow: auto;
+          max-height: inherit;
+          /* overflow: auto; */
         }
       }
     </style>
@@ -50,18 +51,18 @@
   <body>
 
     <div class="uk-grid uk-grid-collapse">
-      <div class="uk-width-1-3@m">
+      <div id="sidebar" class="uk-width-1-3@m">
 
-        <div id="sidebar" class="uk-padding-small">
+        <div  class="uk-padding-small">
 
           <div>
             <h4 class='uk-margin-remove-bottom'><img style='width:40px'
                 src='https://wiki.openstreetmap.org/w/images/0/07/OpenStreetMap-India.svg'>OpenStreetMap India </h4>
-            <h2 class="uk-heading-small uk-margin-remove-top">Neighbourhood Mapping</h2>
+            <h2 class="uk-margin-remove-top">Neighbourhood Mapping</h2>
           </div>
 
           <img
-            src='https://wiki.openstreetmap.org/w/images/thumb/7/77/Chickpete_Bengaluru_OSM_improvement.gif/250px-Chickpete_Bengaluru_OSM_improvement.gif'>
+            src='https://wiki.openstreetmap.org/w/images/thumb/7/77/Chickpete_Bengaluru_OSM_improvement.gif/350px-Chickpete_Bengaluru_OSM_improvement.gif'>
 
           <p>Learn to build a free and <abbr title='open source map data that can be downloaded'>open map</abbr> of your
             neighbourhood using the <a href='https://www.openstreetmap.org/#map=6/19.289/78.963'>OpenStreetMap
@@ -73,27 +74,30 @@
 
           <div class="uk-card uk-card-primary uk-card-body uk-width-1-1 uk-padding-small">
             <p>
-              <small>Next mapping party:</small>
+              Join the online mapping party to map your neighborhood!<br>
               <h3 class="uk-margin-remove">26-27 September 2020</h3>
-
-
               <br><a href='https://qikpik.store/osm-neighbourhood-mapping-party/#faq'>hosted
                 by QikPik</a><br>
               <a href='https://wiki.openstreetmap.org/wiki/India/Events/Neighbourhood_mapping_party_-_QikPik'
                 class='btn'><button class="uk-button uk-button-primary">Details & Schedule</button></a>
               <a href='https://docs.google.com/forms/d/e/1FAIpQLSdIDTA2OZvhZgeajWpys57_IFYg0jTagYW9Lk_PsS-0Kjx4iQ/viewform'
                 class='btn'><button class="uk-button uk-button-default">Register</button></a>
-              <h4><span class="uk-badge" id='registrations'>..</span> neighborhoods registered (<a class='link'
-                  href='https://docs.google.com/spreadsheets/d/1S9RMUbAqf7kfO49FIieP_k8EfYYBMBqxvjdI_Fxx6JE/edit?usp=sharing'>data</a>)
-              </h4>
-            </p>
+              </p>
+              <span class="uk-badge" id='registrations'>..</span> neighborhoods registered (<a class='link'
+                  href='https://docs.google.com/spreadsheets/d/1S9RMUbAqf7kfO49FIieP_k8EfYYBMBqxvjdI_Fxx6JE/edit?usp=sharing'>details</a>)
           </div>
 
-
+   
+              <h3>Resources</h3>
           <footer><a href='https://wiki.openstreetmap.org/wiki/India'>OpenStreetMap India Wiki</a> |
-            <a href='https://osm-in.github.io/neighbourhood-mapping/'>Github</a> |
-            <a href='https://t.me/OSMIndia'>Telegram</a>
+            
+            <a href='https://t.me/OSMIndia'>Telegram</a> |
+            <a href='https://osm-in.github.io/neighbourhood-mapping/'>Github</a>
           </footer>
+
+ 
+
+          
 
         </div>
 
@@ -105,58 +109,6 @@
     </div>
     </div>
 
-    <!--     
-    <div class='flex-parent viewport-full relative scroll-hidden'>
-      
-      <div class='flex-child w-full wmin240-ml wmax360-ml absolute static-ml left bottom'>
-        <div class='flex-parent flex-parent--column viewport-third h-full hmax-full h-auto   '>
-          <div class='flex-child flex-child--grow px12 py12 scroll-auto'>
-            <div id="logo">
-              <h4 class='txt-h4 txt-bold'>OpenStreetMap India </h4>
-              <h2 class='txt-h2 mb12'>Neighbourhood Mapping</h2>
-            </div>
-            <img class='w-full'
-              src='https://wiki.openstreetmap.org/w/images/thumb/7/77/Chickpete_Bengaluru_OSM_improvement.gif/250px-Chickpete_Bengaluru_OSM_improvement.gif'>
-            <p class='txt-l txt-p'>Learn to build a free and <abbr title='open source map data that can be downloaded'
-                class='txt-abbr'>open map</abbr> of your neighbourhood using the <a class='link'
-                href='https://www.openstreetmap.org/#map=6/19.289/78.963'>OpenStreetMap Project</a>.</p>
-            <p class='txt-l txt-p'>A fun way to learn to contribute is by joining a virtual mapping party where members
-              of the <a class='link' href='https://wiki.openstreetmap.org/wiki/India'>India mapping community</a> are
-              available to collaborate and guide beginners.</p>
-            <h3 class='txt-bold my12'>Next mapping party:</h3>
-            <ul class='txt-l my12 px12 py12 bg-gray-faint'>
-              <li class='txt-l txt-bold'> 26-27 September 2020</li>
-              <li class='txt-em'> <a class='link'
-                  href='https://qikpik.store/osm-neighbourhood-mapping-party/#faq'>hosted by QikPik</a></li>
-
-              <li class='txt-l my12'>
-                <a href='https://wiki.openstreetmap.org/wiki/India/Events/Neighbourhood_mapping_party_-_QikPik'
-                  class='btn'>Details & Schedule</a>
-                <a href='https://docs.google.com/forms/d/e/1FAIpQLSdIDTA2OZvhZgeajWpys57_IFYg0jTagYW9Lk_PsS-0Kjx4iQ/viewform'
-                  class='btn btn--green'>Register</a></li>
-            </ul>
-            <div class='hr'></div>
-            <h4 class='txt-h4'><span id='registrations'>..</span> neighborhoods mappers registered (<a class='link'
-                href='https://docs.google.com/spreadsheets/d/1S9RMUbAqf7kfO49FIieP_k8EfYYBMBqxvjdI_Fxx6JE/edit?usp=sharing'>data</a>)
-            </h4>
-
-          </div>
-          <footer class='px12 py12 bg-gray-faint txt-s'>
-            <a href='https://wiki.openstreetmap.org/wiki/India/Events/Neighbourhood_mapping_party_-_QikPik#Schedule'>Event
-              Schedule</a> |
-            <a href='https://wiki.openstreetmap.org/wiki/India'>OpenStreetMap India</a> |
-            <a href='https://osm-in.github.io/neighbourhood-mapping/'><svg class='icon inline'>
-                <use xlink:href='#icon-github' /></svg></a>
-          </footer>
-        </div>
-      </div>
-      <div id='map' class='flex-child flex-child--grow bg-darken10 viewport-twothirds viewport-full-ml'></div>
-
-   
-    </div> -->
-
-
-
     <script>
       var transformRequest = (url, resourceType) => {
         var isMapboxRequest =
@@ -167,7 +119,6 @@
             url.replace("?", "?pluginName=sheetMapper&") : url
         };
       };
-
 
       mapboxgl.accessToken = 'pk.eyJ1IjoicGxhbmVtYWQiLCJhIjoiemdYSVVLRSJ9.g3lbg_eN0kztmsfIPxa9MQ'; //Mapbox token 
 
@@ -209,6 +160,10 @@
             map.on('load', function () {
 
               filterLayers('IN');
+
+              // map.setPaintProperty('land copy','background-color','grey')
+              // map.setPaintProperty('country-highlight','fill-color','white')
+              // map.setPaintProperty('landcover-outdoors','fill-opacity',0.1)
 
               // Add OSM tile layer at after Z14
               map.addLayer({
@@ -335,6 +290,9 @@
                 type: 'symbol',
                 source: 'csvData',
                 filter: ['has', 'point_count'],
+                paint:{
+                  'text-color':'red'
+                },
                 layout: {
                   'text-field': '{point_count_abbreviated}',
                   'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
@@ -367,7 +325,7 @@
                 description += `<br><b>How: </b>${e.features[0].properties.how}`;
                 description += `<br><b>Languages: </b>${e.features[0].properties.languages}`;
                 description +=
-                  `<br><a href='https://osmcha.org/filters?filters={"in_bbox":[{"label":"${bbox_osmcha}","value":"${bbox_osmcha}"}],"area_lt":[{"label":"10","value":"10"}]}'>OSMCha</a>`
+                  `<br><a href='https://osmcha.org/filters?filters={"in_bbox":[{"label":"${bbox_osmcha}","value":"${bbox_osmcha}"}],"area_lt":[{"label":"10","value":"10"}]}'>Check neighbourhood acitivy with OSMCha</a>`
                 description +=
                   `<br><a href='https://www.openstreetmap.org/history#map=14/${e.lngLat.lat}/${e.lngLat.lng}'>OSM History</a>`
                 description +=
