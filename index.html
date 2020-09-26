@@ -45,6 +45,11 @@
           /* overflow: auto; */
         }
       }
+
+      #map-overlay {
+        z-index: 10;
+        visibility: hidden;
+      }
     </style>
   </head>
 
@@ -53,61 +58,110 @@
     <div class="uk-grid uk-grid-collapse">
       <div id="sidebar" class="uk-width-1-3@m">
 
-        <div  class="uk-padding-small">
+        <div class="uk-padding-small">
 
           <div>
             <h4 class='uk-margin-remove-bottom'><img style='width:40px'
                 src='https://wiki.openstreetmap.org/w/images/0/07/OpenStreetMap-India.svg'>OpenStreetMap India </h4>
             <h2 class="uk-margin-remove-top">Neighbourhood Mapping</h2>
           </div>
-
-          <img
-            src='https://wiki.openstreetmap.org/w/images/thumb/7/77/Chickpete_Bengaluru_OSM_improvement.gif/350px-Chickpete_Bengaluru_OSM_improvement.gif'>
-
-          <p>Learn to build a free and <abbr title='open source map data that can be downloaded'>open map</abbr> of your
-            neighbourhood using the <a href='https://www.openstreetmap.org/#map=6/19.289/78.963'>OpenStreetMap
-              Project</a>.</p>
-          <p>A fun way to learn to contribute is by joining a virtual mapping party where members
-            of the <a href='https://wiki.openstreetmap.org/wiki/India'>India mapping community</a> are
-            available to collaborate and guide beginners.</p>
+          <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/Phwrgb16oEM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+          <p>Join the movement to build a crowdsourced map of the country that is free and open source using the <a
+              href='https://www.openstreetmap.org/export#map=15/18.9325/72.8407'>OpenStreetMap Project</a>.
+            <br>
+            <button class="uk-button uk-button-default uk-button-small" type="button" uk-toggle="target: #modal-example">Why?</button>
+            <a href='https://osmlab.github.io/show-me-the-way/#bounds=6.7,67.7,36.4,97.4'><button class="uk-button uk-button-default uk-button-small">See live updates</button></a>
+          </p>
 
 
           <div class="uk-card uk-card-primary uk-card-body uk-width-1-1 uk-padding-small">
             <p>
+              <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/AdHu31d7bjA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen uk-responsive></iframe>
+              Only registered participants can interact with the presenter
+
               Join the online mapping party to map your neighborhood!<br>
               <h3 class="uk-margin-remove">26-27 September 2020</h3>
               <br><a href='https://qikpik.store/osm-neighbourhood-mapping-party/#faq'>hosted
                 by QikPik</a><br>
               <a href='https://wiki.openstreetmap.org/wiki/India/Events/Neighbourhood_mapping_party_-_QikPik'
                 class='btn'><button class="uk-button uk-button-primary">Details & Schedule</button></a>
-              <a href='https://docs.google.com/forms/d/e/1FAIpQLSdIDTA2OZvhZgeajWpys57_IFYg0jTagYW9Lk_PsS-0Kjx4iQ/viewform'
-                class='btn'><button class="uk-button uk-button-default">Register</button></a>
-              </p>
-              <span class="uk-badge" id='registrations'>..</span> neighborhoods registered (<a class='link'
-                  href='https://docs.google.com/spreadsheets/d/1S9RMUbAqf7kfO49FIieP_k8EfYYBMBqxvjdI_Fxx6JE/edit?usp=sharing'>details</a>)
+              <a href='https://t.me/QikPikMappers'
+                class='btn'><button class="uk-button uk-button-default">Telegram Group</button></a>
+            </p>
+            <span class="uk-badge" id='registrations'>..</span> neighborhoods registered (<a class='link'
+              href='https://docs.google.com/spreadsheets/d/1S9RMUbAqf7kfO49FIieP_k8EfYYBMBqxvjdI_Fxx6JE/edit?usp=sharing'>details</a>)
           </div>
 
-   
-              <h3>Resources</h3>
-          <footer><a href='https://wiki.openstreetmap.org/wiki/India'>OpenStreetMap India Wiki</a> |
-            
-            <a href='https://t.me/OSMIndia'>Telegram</a> |
+<h3>What is a mapping party?</h3>
+          <p>A fun way to learn to contribute is by joining a virtual mapping party where members
+            of the <a href='https://wiki.openstreetmap.org/wiki/India'>India mapping community</a> are
+            available to collaborate and guide beginners interested in mapping their neighborhood.</p>
+            <p>          <img src='https://wiki.openstreetmap.org/w/images/thumb/7/77/Chickpete_Bengaluru_OSM_improvement.gif/350px-Chickpete_Bengaluru_OSM_improvement.gif'>
+            </p>
+          <footer>
+            <h4>OpenStreetMap India Links</h4>
+            <a href='https://wiki.openstreetmap.org/wiki/India'>OpenStreetMap India Wiki</a> |
+
+            <a href='https://t.me/OSMIndia'>OSM India Telegram</a> |
             <a href='https://osm-in.github.io/neighbourhood-mapping/'>Github</a>
           </footer>
-
- 
-
-          
 
         </div>
 
       </div>
-      <div class="uk-width-2-3@m" style="height:500px">
-        <div id='map' class='uk-height-1-1'></div>
+      <div class="uk-width-2-3@m uk-inline">
+        <div id='map' class='uk-height-1-1 '></div>
+        <div id="map-overlay" class="uk-overlay uk-position-bottom">
+          <div id="map-overlay-content" class="uk-card uk-card-body uk-card-default uk-width-1-2@m">
+            <h3 class="uk-card-title">Click locations for details</h3>
+          </div>
+
+        </div>
       </div>
 
     </div>
-    </div>
+
+    <!-- This is the modal -->
+<div id="modal-example" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body">
+      <h2 class="uk-modal-title">Why create an open map?</h2>
+      <p>
+      <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/Phwrgb16oEM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    
+    </p>
+    <p>
+      <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/d6n29CU2-Sg" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </p>
+    <h3>Users of OpenStreetMap data in India</h3>
+    <ul>
+      <li>Just Dial</li>
+      <li><a href="https://en.wikipedia.org/wiki/Budge_Budge#/maplink/0">Wikipedia</a></li>
+      <li><a href="https://wiki.openstreetmap.org/wiki/Tips_for_new_(Pokemon_Go)_mappers">Pokemon Go/Ingress</a></li>
+      <li>Facebook</li>
+      <li>Justdial</li>
+      <li>Zomato</li>
+      <li>weather.com</li>
+      <li>Pintrest</li>
+      <li>Swiggy</li>
+      <li>TravelGuru</li>
+      <li>Yatra.com</li>
+      <li>NHAI-National Highways Authority of India</li>
+      <li><a href='https://wiki.openstreetmap.org/wiki/Mapathon_Keralam'>Kerala State IT Mission</a></li>
+    </ul>
+    <h3>Download free India map data</h3>
+    <ul>
+      <li>Query the live map data for geojson or csv extracts using <a href="https://overpass-turbo.eu/s/YoV">Overpass API</a></li>
+      <li>Daily India data extract as .osm.pbf or processed shapefiles from <a href="https://download.geofabrik.de/asia/india.html">Geofabrik.de</a></li>
+      <li>Download raw .osm.xml data from <a href="https://www.openstreetmap.org/export#map=15/18.9325/72.8407">OSM.org</a></li>
+    </ul>
+
+      <p class="uk-text-right">
+          <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+      </p>
+  </div>
+</div>
+
+
 
     <script>
       var transformRequest = (url, resourceType) => {
@@ -131,6 +185,20 @@
         hash: true
       });
 
+      // Fetch content from OSM wiki
+      // const url = "https://wiki.openstreetmap.org/w/api.php?" + new URLSearchParams({
+      //   origin: "*",
+      //   action: "parse",
+      //   page: "India/Events/Neighbourhood_mapping_party_-_QikPik",
+      //   format: "json",
+      // });
+
+      // fetch(url).then(data => data.json()).then(data => {
+      //       let pageHTML = data.parse.text["*"]    
+      //       pageHTML = pageHTML.replaceAll('href="/','href="https://wiki.openstreetmap.org/')
+
+      //       document.getElementById('map-overlay-content').innerHTML = pageHTML;
+      // })
 
 
       //YOUR TURN: Replace sheet id
@@ -146,6 +214,7 @@
             makeGeoJSON(csvData);
           }
         });
+
 
         function makeGeoJSON(csvData) {
 
@@ -290,8 +359,8 @@
                 type: 'symbol',
                 source: 'csvData',
                 filter: ['has', 'point_count'],
-                paint:{
-                  'text-color':'red'
+                paint: {
+                  'text-color': 'red'
                 },
                 layout: {
                   'text-field': '{point_count_abbreviated}',
@@ -314,8 +383,10 @@
 
                 // Generate bbox from point coords
                 var buffer = 0.05;
-                var bbox_osmcha = [lng + buffer, lat - buffer, lng - buffer, lat + buffer].join(',');
-                var bbox_wsen = [lng - buffer, lat - buffer, lng + buffer, lat + buffer].join(',');
+                var bbox_osmcha = [lng + buffer, lat - buffer, lng - buffer, lat + buffer].join(
+                  ',');
+                var bbox_wsen = [lng - buffer, lat - buffer, lng + buffer, lat + buffer].join(
+                  ',');
 
                 //You can adjust the values of the popup to match the headers of your CSV. 
                 // For example: e.features[0].properties.Name is retrieving information from the field Name in the original CSV. 
@@ -331,9 +402,10 @@
                 description +=
                   `<br><a href='https://render.openstreetmap.org/cgi-bin/export?bbox=${bbox_wsen}&scale=40950&format=png'>Download map</a>`
 
-                fetch(
-                  'https://www.openstreetmap.org/history?list=1&bbox=78.19929152727127%2C17.326283217841127%2C78.3434870839119%2C17.4458708268874'
-                ).then(data => console.log(data))
+                // Show changes in area
+                // fetch(
+                //   'https://www.openstreetmap.org/history?list=1&bbox=78.19929152727127%2C17.326283217841127%2C78.3434870839119%2C17.4458708268874'
+                // ).then(data => console.log(data))
 
                 // Ensure that if the map is zoomed out such that multiple
                 // copies of the feature are visible, the popup appears
@@ -343,6 +415,8 @@
                 }
 
                 //add Popup to map
+
+                document.getElementById('map-overlay-content').innerHTML = description;
 
                 new mapboxgl.Popup()
                   .setLngLat(coordinates)
