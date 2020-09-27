@@ -69,18 +69,20 @@
           <p>Join the movement to build a crowdsourced map of the country that is free and open source using the <a
               href='https://www.openstreetmap.org/export#map=15/18.9325/72.8407'>OpenStreetMap Project</a>.
             <br>
-            <button class="uk-button uk-button-default uk-button-small" type="button" uk-toggle="target: #modal-example">Why?</button>
-            <a href='https://osmlab.github.io/show-me-the-way/#bounds=6.7,67.7,36.4,97.4'><button class="uk-button uk-button-default uk-button-small">See live updates</button></a>
+            <button class="uk-button uk-button-default uk-button-small" type="button" uk-toggle="target: #modal-example">What is OpenStreetMap?</button>
+            
           </p>
 
 
           <div class="uk-card uk-card-primary uk-card-body uk-width-1-1 uk-padding-small">
             <p>
-              <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/AdHu31d7bjA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen uk-responsive></iframe>
-              Only registered participants can interact with the presenter
-
-              Join the online mapping party to map your neighborhood!<br>
-              <h3 class="uk-margin-remove">26-27 September 2020</h3>
+              <a href='https://osmlab.github.io/show-me-the-way/#bounds=6.7,67.7,36.4,97.4&comment=qikpikmp1'><button class="uk-button uk-button-default uk-button-small">Live map updates</button></a>
+            <a href='https://resultmaps.neis-one.org/osm-changesets?comment=qikpikmp1#4/19.93/82.92'><button class="uk-button uk-button-default uk-button-small">Activity map</button></a>
+            </p>
+            <p>
+              <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/2Rx2SgyKd7E" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen uk-responsive></iframe>
+               Join the online mapping party to map your neighborhood!<br>
+              <h3 class="uk-margin-remove"><a href='https://osmcal.org/event/305/'>26-27 September 2020 <span uk-icon="calendar"></span></a></h3>
               <br><a href='https://qikpik.store/osm-neighbourhood-mapping-party/#faq'>hosted
                 by QikPik</a><br>
               <a href='https://wiki.openstreetmap.org/wiki/India/Events/Neighbourhood_mapping_party_-_QikPik'
@@ -185,6 +187,8 @@
         hash: true
       });
 
+      fetch('https://resultmaps.neis-one.org/osm-changesets?comment=qikpikmp1#5/19.891/82.969',{mode:'no-cors'})
+      .then(data=>console.log(data.body))
       // Fetch content from OSM wiki
       // const url = "https://wiki.openstreetmap.org/w/api.php?" + new URLSearchParams({
       //   origin: "*",
