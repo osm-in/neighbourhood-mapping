@@ -87,8 +87,7 @@
               <h3 class="uk-margin-remove"><a href='https://osmcal.org/event/305/'>26-27 September 2020 <span uk-icon="calendar"></span></a></h3>
               <br><a href='https://qikpik.store/osm-neighbourhood-mapping-party/#faq'>hosted
                 by QikPik</a><br>
-              <a href='https://wiki.openstreetmap.org/wiki/India/Events/Neighbourhood_mapping_party_-_QikPik'
-                class='btn'><button class="uk-button uk-button-primary">Details & Schedule</button></a>
+              <button class="uk-button uk-button-primary" type="button" uk-toggle="target: #modal-schedule">Details & Schedule</button>
               <a href='https://t.me/QikPikMappers'
                 class='btn'><button class="uk-button uk-button-default">Telegram Group</button></a>
             </p>
@@ -165,6 +164,18 @@
   </div>
 </div>
 
+  <!-- This is the modal -->
+  <div id="modal-schedule" class="uk-modal-container" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+      <a href='https://wiki.openstreetmap.org/wiki/India/Events/Neighbourhood_mapping_party_-_QikPik'
+      class='btn'><h2 class="uk-modal-title">Event Details</h2></a>
+  <div id="wiki-schedule"></div>
+        <p class="uk-text-right">
+            <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+        </p>
+    </div>
+  </div>
+
 
 
     <script>
@@ -189,22 +200,23 @@
         hash: true
       });
 
-      fetch('https://resultmaps.neis-one.org/osm-changesets?comment=qikpikmp1#5/19.891/82.969',{mode:'no-cors'})
-      .then(data=>console.log(data.body))
+      // fetch('https://resultmaps.neis-one.org/osm-changesets?comment=qikpikmp1#5/19.891/82.969',{mode:'no-cors'})
+      // .then(data=>console.log(data.body))
+
       // Fetch content from OSM wiki
-      // const url = "https://wiki.openstreetmap.org/w/api.php?" + new URLSearchParams({
-      //   origin: "*",
-      //   action: "parse",
-      //   page: "India/Events/Neighbourhood_mapping_party_-_QikPik",
-      //   format: "json",
-      // });
+      const url = "https://wiki.openstreetmap.org/w/api.php?" + new URLSearchParams({
+        origin: "*",
+        action: "parse",
+        page: "India/Events/Neighbourhood_mapping_party_-_QikPik",
+        format: "json",
+      });
 
-      // fetch(url).then(data => data.json()).then(data => {
-      //       let pageHTML = data.parse.text["*"]    
-      //       pageHTML = pageHTML.replaceAll('href="/','href="https://wiki.openstreetmap.org/')
+      fetch(url).then(data => data.json()).then(data => {
+            let pageHTML = data.parse.text["*"]    
+            pageHTML = pageHTML.replaceAll('href="/','href="https://wiki.openstreetmap.org/')
 
-      //       document.getElementById('map-overlay-content').innerHTML = pageHTML;
-      // })
+            document.getElementById('wiki-schedule').innerHTML = pageHTML;
+      })
 
 
       //YOUR TURN: Replace sheet id
