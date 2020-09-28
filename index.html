@@ -88,7 +88,7 @@
 
             </p>
             <p>
-              Livestream 
+              Livestream
               <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/F1WuwMBoluQ" frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen uk-responsive></iframe>
@@ -307,6 +307,145 @@
                 clusterMaxZoom: 14, // Max zoom to cluster points on
                 clusterRadius: 20 // Radius of each cluster when clustering points (defaults to 50)
               });
+
+
+              map.addSource('mappingData', {
+                type: 'vector',
+                url: 'mapbox://planemad.1ezuvzfs'
+              });
+
+              // Add mapping layers
+
+              map.addLayer({
+                  'id': 'mapping heatmap',
+                  'type': 'heatmap',
+                  'source': 'mappingData',
+                  'source-layer': 'out',
+                  'maxzoom': 13,
+                  'paint': {
+                    // Increase the heatmap color weight weight by zoom level
+                    // heatmap-intensity is a multiplier on top of heatmap-weight
+                    'heatmap-intensity': [
+                      'interpolate',
+                      ['linear'],
+                      ['zoom'],
+                      0,
+                      1,
+                      13,
+                      3
+                    ],
+                    // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
+                    // Begin color ramp at 0-stop with a 0-transparancy color
+                    // to create a blur-like effect.
+                    'heatmap-color': [
+                      "interpolate",
+                      ["linear"],
+                      ["heatmap-density"],
+                      0,
+                      "rgba(0, 0, 255, 0)",
+                      0.1,
+                      "royalblue",
+                      0.3,
+                      "cyan",
+                      0.5,
+                      "lime",
+                      0.9,
+                      "hsl(60, 100%, 50%)",
+                      1,
+                      "hsl(0, 57%, 66%)"
+                    ],
+                    // Adjust the heatmap radius by zoom level
+                    'heatmap-radius': [
+                      'interpolate',
+                      ['linear'],
+                      ['zoom'],
+                      0,
+                      2,
+                      9,
+                      10
+                    ],
+                    // Transition from heatmap to circle layer by zoom level
+                    'heatmap-opacity': [
+                      'interpolate',
+                      ['linear'],
+                      ['zoom'],
+                      10,
+                      1,
+                      13,
+                      0
+                    ]
+                  }
+                },
+                'waterway-label'
+              );
+
+              map.addLayer({
+                id: 'mapping poly',
+                type: 'fill',
+                'source': 'mappingData',
+                'source-layer': 'out',
+                'minzoom': 10,
+                filter: [
+                  "all",
+                  [
+                    "match",
+                    ["geometry-type"],
+                    ["Polygon"],
+                    true,
+                    false
+                  ]
+                ],
+                paint: {
+                  'fill-color': "hsla(307, 95%, 85%, 0.83)"
+                }
+              });
+
+              map.addLayer({
+                id: 'mapping line',
+                type: 'line',
+                'source': 'mappingData',
+                'source-layer': 'out',
+                'minzoom': 10,
+                filter: [
+                  "all",
+                  [
+                    "match",
+                    ["geometry-type"],
+                    ["LineString", "Linestring"],
+                    true,
+                    false
+                  ]
+                ],
+                paint: {
+                  'line-color': "hsla(307, 95%, 85%, 0.83)",
+                  "line-width": 2
+                }
+              });
+
+              map.addLayer({
+                id: 'mapping node',
+                type: 'circle',
+                'source': 'mappingData',
+                'source-layer': 'out',
+                'minzoom': 10,
+                filter: [
+                  "all",
+                  [
+                    "match",
+                    ["geometry-type"],
+                    ["LineString", "Point"],
+                    true,
+                    false
+                  ]
+                ],
+                paint: {
+                  'circle-color': "white",
+                  'circle-radius': 2,
+                  'circle-stroke-width': 1,
+                  'circle-stroke-color': "#ff14f7"
+                }
+              });
+
 
               // Add cluster layers 
               // https://docs.mapbox.com/mapbox-gl-js/example/cluster/
