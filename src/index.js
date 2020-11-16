@@ -134,9 +134,39 @@ function addMapLayers() {
     type: "geojson",
     generateId: true,
     data: changesetsGeojson,
+    tolerance: 0,
   });
 
   // Map layers
+
+  map.addLayer({
+    id: "earthquakes-heat",
+    type: "heatmap",
+    source: "changesets",
+    maxzoom: 9,
+    paint: {
+      // Increase the heatmap color weight weight by zoom level
+      // heatmap-intensity is a multiplier on top of heatmap-weight
+      "heatmap-color": [
+        "interpolate",
+        ["linear"],
+        ["heatmap-density"],
+        0,
+        "rgba(0, 0, 255, 0)",
+        0.1,
+        "royalblue",
+        0.3,
+        "cyan",
+        0.5,
+        "lime",
+        0.7,
+        "yellow",
+        1,
+        "red",
+      ],
+      "heatmap-opacity":0.4
+    },
+  });
 
   map.addLayer({
     id: "changesets",
@@ -147,6 +177,7 @@ function addMapLayers() {
       "fill-opacity": 0.1,
     },
   });
+
   map.addLayer({
     id: "changesets outline",
     type: "line",
@@ -154,6 +185,16 @@ function addMapLayers() {
     paint: {
       "line-color": "red",
       "line-width": 2,
+    },
+  });
+
+  map.addLayer({
+    id: "changesets circle",
+    type: "circle",
+    source: "changesets",
+    paint: {
+      "circle-radius": 3,
+      "circle-color": "red",
     },
   });
 }
