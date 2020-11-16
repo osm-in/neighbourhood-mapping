@@ -25,7 +25,7 @@ var map = new mapboxgl.Map({
   container: "map",
   style: "mapbox://styles/planemad/ckf4xcet7231819mm2e8njlca",
   center: [82, 22], // Centre position of India
-  zoom: 5,
+  zoom: 4,
   hash: true,
 });
 
@@ -56,12 +56,7 @@ map.addControl(
         label: "Satellite",
         styleName: "Satellite",
         styleUrl: "mapbox://styles/mapbox/satellite-streets-v10",
-      },
-      {
-        label: "Activity",
-        styleName: "a",
-        styleUrl: "",
-      },
+      }
     ],
     onChange: (style) => filterBoundaries(),
   }),
@@ -316,6 +311,7 @@ function filterBoundaries() {
           };
 
           changesetsGeojson.features.push(changesetPolygon);
+          map.getSource("changesets").setData(changesetsGeojson);
         });
       })
       .finally((e) => {
