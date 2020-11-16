@@ -4,17 +4,18 @@
   <head>
     <meta charset='utf-8' />
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <title>OpenStreetMap India: Neighbourhood Mapping Party Map</title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+    <title>OpenStreetMap India: Neighbourhood Mapping Party Map</title>
 
     <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
 
-    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://npmcdn.com/csv2geojson@latest/csv2geojson.js'></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js">
+    </script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
+      rel="stylesheet" />
 
-    <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+    <link href="https://raw.githack.com/bravecow/mapbox-gl-controls/master/theme.css" rel="stylesheet">
 
     <!-- UIkit CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.7/dist/css/uikit.min.css" />
@@ -22,6 +23,7 @@
     <!-- UIkit JS -->
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.7/dist/js/uikit.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.7/dist/js/uikit-icons.min.js"></script>
+
     <style>
       #map {
         height: 100vh;
@@ -55,67 +57,81 @@
 
   <body>
 
+
     <div class="uk-grid uk-grid-collapse">
       <div id="sidebar" class="uk-width-1-3@m">
 
         <div class="uk-padding-small">
 
-          <div>
-            <h4 class='uk-margin-remove-bottom'><img style='width:40px'
-                src='https://wiki.openstreetmap.org/w/images/0/07/OpenStreetMap-India.svg'>OpenStreetMap India </h4>
-            <h2 class="uk-margin-remove-top">Neighbourhood Mapping</h2>
-          </div>
-          <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/Phwrgb16oEM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
-          <p>Join the movement to build a crowdsourced map of the country that is free and open source using the <a
-              href='https://www.openstreetmap.org/export#map=15/18.9325/72.8407'>OpenStreetMap Project</a>.
-            <br>
-            <button class="uk-button uk-button-default uk-button-small" type="button"
-              uk-toggle="target: #modal-example">What is OpenStreetMap?</button>
-
-          </p>
+          <header>
+            <div>
+              <h4 class='uk-margin-remove-bottom'><img style='width:40px'
+                  src='https://wiki.openstreetmap.org/w/images/0/07/OpenStreetMap-India.svg'><a
+                  href="https://osm-in.github.io/openstreetmap.in">OpenStreetMap India</a></h4>
+              <h2 class="uk-margin-remove-top">Neighbourhood Mapping</h2>
+            </div>
+          </header>
 
 
-          <div class="uk-card uk-card-primary uk-card-body uk-width-1-1 uk-padding-small">
-            <p>
-              Map contributions <b>#qikpikmp2</b><br>
-              <a href='https://osmlab.github.io/show-me-the-way/#bounds=6.7,67.7,36.4,97.4&comment=qikpikmp2'><button
-                  class="uk-button uk-button-default uk-button-small">Live edits</button></a>
-              <a href='https://resultmaps.neis-one.org/osm-changesets?comment=qikpikmp2#4/19.93/82.92'><button
-                  class="uk-button uk-button-default uk-button-small">Activity</button></a>
-              <a
-                href='https://osmcha.org/?filters=%7B%22date__gte%22%3A%5B%7B%22label%22%3A%222020-09-18%22%2C%22value%22%3A%222020-09-18%22%7D%5D%2C%22comment%22%3A%5B%7B%22label%22%3A%22qikpikmp2%22%2C%22value%22%3A%22qikpikmp2%22%7D%5D%7D'><button
-                  class="uk-button uk-button-default uk-button-small">Changeset list</button></a>
+          <article>
+            <p>Join the movement to build a crowdsourced map of the country that is free and open source using the <a
+                href='https://www.openstreetmap.org/export#map=15/18.9325/72.8407'>OpenStreetMap Project</a>.
+              <br>
+
+              <button id='edit-map' class="uk-button uk-button-primary uk-button-small" type="button"><span
+                  uk-icon="pencil"></span> Edit the
+                map</button>
+              <a href="https://wiki.openstreetmap.org/wiki/India"><button
+                  class="uk-button uk-button-default uk-button-small" type="button"><span uk-icon="file-edit"></span>
+                  Mapping wiki</button></a>
 
             </p>
+            <div class="uk-card uk-card-primary uk-card-body uk-width-1-1 uk-padding-small">
+              <p>
+                Map contributions <b>#qikpikmp2</b><br>
+                <a href='https://osmlab.github.io/show-me-the-way/#bounds=6.7,67.7,36.4,97.4&comment=qikpikmp2'><button
+                    class="uk-button uk-button-default uk-button-small">Live edits</button></a>
+                <a href='https://resultmaps.neis-one.org/osm-changesets?comment=qikpikmp2#4/19.93/82.92'><button
+                    class="uk-button uk-button-default uk-button-small">Activity</button></a>
+                <a
+                  href='https://osmcha.org/?filters=%7B%22date__gte%22%3A%5B%7B%22label%22%3A%222020-09-18%22%2C%22value%22%3A%222020-09-18%22%7D%5D%2C%22comment%22%3A%5B%7B%22label%22%3A%22qikpikmp2%22%2C%22value%22%3A%22qikpikmp2%22%7D%5D%7D'><button
+                    class="uk-button uk-button-default uk-button-small">Changeset list</button></a>
 
-            <p>
-              <h3 class="uk-margin-remove">15-22 November 2020 <span
-                    uk-icon="calendar"></span></h3>
-              <br><a href='https://qikpik.store/osm-neighbourhood-mapping-party/#faq'>hosted
-                by QikPik</a><br>
-              <button class="uk-button uk-button-primary" type="button" uk-toggle="target: #modal-schedule">Details &
-                Schedule</button>
-              <a href='https://t.me/QikPikMappers' class='btn'><button class="uk-button uk-button-default">Telegram
-                  Group</button></a>
+              </p>
+
+              <p>
+                <h3 class="uk-margin-remove">15-22 November 2020 <span uk-icon="calendar"></span></h3>
+                <br><a href='https://qikpik.store/osm-neighbourhood-mapping-party/#faq'>hosted
+                  by QikPik</a><br>
+                <button class="uk-button uk-button-primary" type="button" uk-toggle="target: #modal-schedule">Details &
+                  Schedule</button>
+                <a href='https://t.me/QikPikMappers' class='btn'><button class="uk-button uk-button-default">Telegram
+                    Group</button></a>
+              </p>
+            </div>
+
+            <h3>What is a mapping party?</h3>
+            <p>A fun way to learn to contribute is by joining a virtual mapping party where members
+              of the <a href='https://wiki.openstreetmap.org/wiki/India'>India mapping community</a> are
+              available to collaborate and guide beginners interested in mapping their neighborhood.</p>
+            <p> <img
+                src='https://wiki.openstreetmap.org/w/images/thumb/7/77/Chickpete_Bengaluru_OSM_improvement.gif/350px-Chickpete_Bengaluru_OSM_improvement.gif'>
             </p>
-          </div>
 
-          <h3>What is a mapping party?</h3>
-          <p>A fun way to learn to contribute is by joining a virtual mapping party where members
-            of the <a href='https://wiki.openstreetmap.org/wiki/India'>India mapping community</a> are
-            available to collaborate and guide beginners interested in mapping their neighborhood.</p>
-          <p> <img
-              src='https://wiki.openstreetmap.org/w/images/thumb/7/77/Chickpete_Bengaluru_OSM_improvement.gif/350px-Chickpete_Bengaluru_OSM_improvement.gif'>
-          </p>
-          <footer>
-            <h4>OpenStreetMap India Links</h4>
-            <a href='https://wiki.openstreetmap.org/wiki/India'>OpenStreetMap India Wiki</a> |
+            <footer>
+              <p>
+                <a href='https://wiki.openstreetmap.org/wiki/India'>OpenStreetMap India Wiki</a> |
+                <a href='https://t.me/OSMIndia'>OSM India Telegram</a> |
+                <a href='https://github.com/osm-in/openstreetmap.in/'>Github</a>
+              </p>
+            </footer>
 
-            <a href='https://t.me/OSMIndia'>OSM India Telegram</a> |
-            <a href='https://osm-in.github.io/neighbourhood-mapping/'>Github</a>
-          </footer>
+          </article>
+
+
 
         </div>
+
 
       </div>
       <div class="uk-width-2-3@m uk-inline">
@@ -131,7 +147,7 @@
     </div>
 
     <!-- This is the modal -->
-    <div id="modal-example" uk-modal>
+    <div id="modal-about" uk-modal>
       <div class="uk-modal-dialog uk-modal-body">
         <h2 class="uk-modal-title">Why create an open map?</h2>
         <p>
@@ -139,11 +155,6 @@
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen></iframe>
 
-        </p>
-        <p>
-          <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/d6n29CU2-Sg" frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen></iframe>
         </p>
         <h3>Users of OpenStreetMap data in India</h3>
         <ul>
@@ -159,17 +170,13 @@
           <li>Swiggy</li>
           <li>TravelGuru</li>
           <li>Yatra.com</li>
+          <li><a href="https://bhugolgis.s3.ap-south-1.amazonaws.com/mcgm_covid19_map2.html">Municipal Corporation of
+              Greater Mumbai - COVID containment zones</a></li>
+          <li><a href="http://ffs.tamcnhp.com/">Central Water Commission - Flood Forecast</a></li>
           <li>NHAI-National Highways Authority of India</li>
           <li><a href='https://wiki.openstreetmap.org/wiki/Mapathon_Keralam'>Kerala State IT Mission</a></li>
-        </ul>
-        <h3>Download free India map data</h3>
-        <ul>
-          <li>Query the live map data for geojson or csv extracts using <a
-              href="https://overpass-turbo.eu/s/YoV">Overpass API</a></li>
-          <li>Daily India data extract as .osm.pbf or processed shapefiles from <a
-              href="https://download.geofabrik.de/asia/india.html">Geofabrik.de</a></li>
-          <li>Download raw .osm.xml data from <a
-              href="https://www.openstreetmap.org/export#map=15/18.9325/72.8407">OSM.org</a></li>
+          <li><a href='https://onemapggm.mcg.gov.in/citizenportal/'>OneMap Gurugram - Municipal Corporation of
+              Gurugram</a></li>
         </ul>
 
         <p class="uk-text-right">
@@ -179,12 +186,46 @@
     </div>
 
     <!-- This is the modal -->
-    <div id="modal-schedule" class="uk-modal-container" uk-modal>
+    <div id="modal-download" uk-modal>
       <div class="uk-modal-dialog uk-modal-body">
-        <a href='https://wiki.openstreetmap.org/wiki/India/Events/Neighbourhood_mapping_party_-_QikPik' class='btn'>
-          <h2 class="uk-modal-title">Event Details</h2>
-        </a>
-        <div id="wiki-schedule"></div>
+        <h2 class="uk-modal-title">Using OpenStreetMap India map data</h2>
+        <img src='./img/vivekananda-rock-memorial-map-data.gif'>
+        <p>OpenStreetMap data is available for free download and use per <a
+            href='https://www.openstreetmap.org/copyright'>Open Data Commons Open Database License (ODbL)</a>. Various
+          data download and export formats based on user needs. Check the <a
+            href='https://wiki.openstreetmap.org/wiki/Downloading_data'>wiki for more details.</a></p>
+        <p>For a map in Indic languages, check the <a href='https://osm-in.github.io/indic-map/'>Indic OpenStreetMap
+            demo</a> and the <a href='https://wiki.openstreetmap.org/wiki/Map_internationalization_(India)'>wiki</a> for
+          more resources for local language maps</p>
+
+        <h3>Download free India map data</h3>
+        <h4>APIs</h4>
+        <ul>
+          <li>Query the live map data for specific objects using Overpass API. Updated minutely. `.geojson` `.csv`
+            `.gpx` `google earth .kml`
+            <uL>
+              <li><a href="https://overpass-turbo.eu/s/YoV">Bus stops and bus stations in Chennai</a></li>
+              <li><a href="http://overpass-turbo.eu/s/YJB">All forts and castles in India</a></li>
+              <li><a href="http://overpass-turbo.eu/s/YJG">CSV list of all railway stations in India</a></li>
+            </uL>
+          </li>
+        </ul>
+        <h4>Downloads</h4>
+        <ul>
+          <li>Request custom data extracts from <a href="https://export.hotosm.org/en/v3/">Humanitarian OpenStreetMap
+              Team (HOTOSM)</a>. Updated 2-3 days. `geopackage .gpkg` `shapefiles .shp` `garmin .img` `google earth
+            .kml` `.mbtiles` `maps.me .mwm` `osmand .obf`</li>
+          <li>India OSM data extract from <a href="https://download.geofabrik.de/asia/india.html">Geofabrik.de</a>.
+            Updated daily. `osm pbf` `shapefiles`</li>
+          <li>Raw OSM data from <a href="https://www.openstreetmap.org/export#map=15/18.9325/72.8407">OSM.org</a>.
+            Limited area. Updated minutely. `osm xml`</li>
+          <li>Administrative boundaries clipped to land area from <a href="https://osm-boundaries.com/Map">OSM
+              Boundaries</a>. Updated monthly. `.geojson`</li>
+          <li>Snapshot of full India outline as per Survey of India from <a
+              href="https://github.com/datameet/maps/blob/master/Country/india-osm.geojson">Datameet Maps</a>. Limited
+            area. Not updated. `.geojson`</li>
+        </ul>
+
         <p class="uk-text-right">
           <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
         </p>
@@ -192,223 +233,12 @@
     </div>
 
 
-
     <script>
-
-      mapboxgl.accessToken = 'pk.eyJ1IjoicGxhbmVtYWQiLCJhIjoiemdYSVVLRSJ9.g3lbg_eN0kztmsfIPxa9MQ'; //Mapbox token 
-
-      var map = new mapboxgl.Map({
-        container: 'map', // container id
-        style: 'mapbox://styles/mapbox/light-v10', //stylesheet location
-        center: [81.33, 21.31], // starting position
-        zoom: 4, // starting zoom
-        hash: true
-      });
-
-      // fetch('https://resultmaps.neis-one.org/osm-changesets?comment=qikpikmp1#5/19.891/82.969',{mode:'no-cors'})
-      // .then(data=>console.log(data.body))
-
-      // Fetch content from OSM wiki
-      const url = "https://wiki.openstreetmap.org/w/api.php?" + new URLSearchParams({
-        origin: "*",
-        action: "parse",
-        page: "India/Events/Neighbourhood_mapping_party_-_QikPik",
-        format: "json",
-      });
-
-      fetch(url).then(data => data.json()).then(data => {
-        let pageHTML = data.parse.text["*"]
-        pageHTML = pageHTML.replaceAll('href="/', 'href="https://wiki.openstreetmap.org/')
-
-        document.getElementById('wiki-schedule').innerHTML = pageHTML;
-      })
-
-
-   //
-//  Map logic
-//
-
-map.on('load', function () {
-
-// Show country boundaries as per Government of India
-filterBoundaries();
-
-// Add custom layers
-addMapLayers();
-
-// Add map interactions
-addMapEvents()
-
-});
-
-
-      //
-// Map functions
-//
-
-function addMapLayers() {
-
-// Map data sources
-
-map.addSource('changesets', {
-    type: "geojson",
-    generateId: true,
-    data: changesetsGeojson
-});
-
-
-// Map layers
-
-map.addLayer({
-    id: 'changesets',
-    type: "fill",
-    source: 'changesets',
-    paint: {
-        "fill-color": "red",
-        "fill-opacity": .1
-    }
-});
-map.addLayer({
-    id: 'changesets outline',
-    type: "line",
-    source: 'changesets',
-    paint: {
-        "line-color": "red",
-        "line-width": 2
-    }
-});
-
-}
-
-      // Map events
-
-      function addMapEvents() {
-
-        // Change the cursor to a pointer when the mouse is over the places layer.
-        map.on('mouseenter', 'changesets', function () {
-          map.getCanvas().style.cursor = 'pointer';
-        });
-
-
-        // Change it back to a pointer when it leaves.
-        map.on('mouseleave', 'changesets', function () {
-          map.getCanvas().style.cursor = '';
-        });
-
-
-        // When a click event occurs on a feature in the csvData layer, open a popup at the
-        // location of the feature, with description HTML from its properties.
-        map.on('click', 'changesets', function (e) {
-
-          console.log(e.features)
-          const feature = e.features[0];
-          var coordinates = e.lngLat.toArray();
-
-          var lng = e.lngLat.lng;
-          var lat = e.lngLat.lat;
-
-
-          // console.log(moment("20111031", "YYYYMMDD").fromNow())
-
-
-          // Generate bbox from point coords
-          var buffer = 0.05;
-          var bbox_osmcha = [lng + buffer, lat - buffer, lng - buffer, lat + buffer].join(
-            ',');
-          var bbox_wsen = [lng - buffer, lat - buffer, lng + buffer, lat + buffer].join(
-            ',');
-
-          var description = `<b>${feature.properties.changes}</b> changes by ${feature.properties.user}`;
-          description += `<p>${feature.properties.comment}</p>`;
-          description +=
-            `<br><a href='https://osmcha.org/filters?filters={"in_bbox":[{"label":"${bbox_osmcha}","value":"${bbox_osmcha}"}],"area_lt":[{"label":"10","value":"10"}]}'>Check neighbourhood acitivy with OSMCha</a>`
-          description +=
-            `<br><a href='https://www.openstreetmap.org/history#map=14/${e.lngLat.lat}/${e.lngLat.lng}'>OSM History</a>`;
-
-          // Ensure that if the map is zoomed out such that multiple
-          // copies of the feature are visible, the popup appears
-          // over the copy being pointed to.
-          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-          }
-
-          //add Popup to map
-
-          document.getElementById('map-overlay').innerHTML = description;
-
-          new mapboxgl.Popup()
-            .setLngLat(coordinates)
-            .setHTML(description)
-            .addTo(map);
-        });
-
+      function editMap() {
+        console.log(this)
       }
-
-      function filterBoundaries() {
-    // Apply an Indian worldview filter to the boundary map layers
-    // https://docs.mapbox.com/mapbox-gl-js/example/toggle-worldviews/
-    ['admin-0-boundary-bg', 'admin-0-boundary', 'admin-0-boundary-disputed', 'admin-1-boundary'].forEach(
-        layer => {
-            let layerFilter = map.getFilter(layer);
-            layerFilter[layerFilter.length - 1] = ['match', ['get', 'worldview'],
-                ['all', 'IN'], true, false
-            ]
-            map.setFilter(layer, layerFilter)
-        })
-}
-
-
-      // Create a function that will identify which worldview
-      // is currently selected and run the filterLayers function
-      // with that worldview as an argument.
-      function switchWorldview(option) {
-        filterLayers(option.target.id);
-      }
-
-      // Update the filter for each "admin-0-*" layer, which contain
-      // administrative boundaries at the country level.
-      // These are the same filters used in the Mapbox Light
-      // style except that the worldview is based on user input.
-      function filterLayers(worldview) {
-        // The "admin-0-boundary-disputed" layer shows boundaries
-        // at this level that are known to be disputed.
-        map.setFilter('admin-0-boundary-disputed', [
-          'all',
-          ['==', ['get', 'disputed'], 'true'],
-          ['==', ['get', 'admin_level'], 0],
-          ['==', ['get', 'maritime'], 'false'],
-          ['match', ['get', 'worldview'],
-            ['all', worldview], true, false
-          ]
-        ]);
-        // The "admin-0-boundary" layer shows all boundaries at
-        // this level that are not disputed.
-        map.setFilter('admin-0-boundary', [
-          'all',
-          ['==', ['get', 'admin_level'], 0],
-          ['==', ['get', 'disputed'], 'false'],
-          ['==', ['get', 'maritime'], 'false'],
-          ['match', ['get', 'worldview'],
-            ['all', worldview], true, false
-          ]
-        ]);
-        // The "admin-0-boundary-bg" layer helps features in both
-        // "admin-0-boundary" and "admin-0-boundary-disputed" stand
-        // out visually.
-        map.setFilter('admin-0-boundary-bg', [
-          'all',
-          ['==', ['get', 'admin_level'], 0],
-          ['==', ['get', 'maritime'], 'false'],
-          ['match', ['get', 'worldview'],
-            ['all', worldview], true, false
-          ]
-        ]);
-      }
-
-      // Web interface
-
-      // document.getElementById("sidebar").onClick(e=>this.style.visibility('hidden'))
     </script>
+    <script src="./dist/main.js"></script>
 
   </body>
 
